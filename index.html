@@ -64,14 +64,12 @@
           <div id="test2" class="col s12">
             <div class="row">
               <div class="input-field col s6">
-                <i class="material-icons prefix">map</i>
-                <input id="estado" type="text" class="validate">
-                <label for="estado">Estado</label>
+                <select id="estado" class="browser-default" onchange="getCidades()">
+                </select>
               </div>
               <div class="input-field col s6">
-                <i class="material-icons prefix">location_city</i>
-                <input id="cidade" type="text" class="validate">
-                <label for="cidade">Cidade</label>
+                <select id="cidade" class="browser-default">
+                </select>
               </div>
               <div class="input-field col s6">
                 <i class="material-icons prefix">location_on</i>
@@ -208,6 +206,45 @@
               })
 
           }
+
+          function getEstados(){
+            selectEstado = document.querySelector("#estado");
+            let urlEstado = "https://servicodados.ibge.gov.br/api/v1/localidades/estados";
+
+            fetch(urlEstado)
+            .then((res) => {return res.json()})
+            .then((estados) => {
+
+              let estadosList = '<option value="" disabled selected>Escolha um Estado</option>'
+                for(let i=0; i < estados.length; i++){
+                  estadosList += `<option value="${estados[i].sigla}">${estados[i].nome}</option>`
+                }
+
+              selectEstado.innerHTML = estadosList
+            })
+          }
+
+          getEstados();
+
+          function getCidades(){
+            uf = document.querySelector("#estado").value
+            let urlCidade = `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+            selectCidade = document.querySelector("#cidade");
+
+            fetch(urlCidade)
+            .then((res) => {return res.json()})
+            .then((cidades) => {
+
+              let cidadesList = '<option value="" disabled selected>Escolha uma Cidade</option>'
+                for(let i=0; i < cidades.length; i++){
+                  cidadesList += `<option value="${cidades[i].nome}">${cidades[i].nome}</option>`
+                }
+
+              selectCidade.innerHTML = cidadesList
+            })
+          }
+
+          getCidades("PE");
         </script>
 
       </body>
